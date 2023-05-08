@@ -56,7 +56,7 @@ def create_zip_file(path: str, xml_count: int):
             archive.writestr(filename, xml_data)
 
 
-def first_task(path: str, xml_count: int, zip_count: int):
+def create_xml_in_zip(path: str, xml_count: int, zip_count: int):
     """Выполнение первого задания.
 
     path: str - путь до папки в которой нужно сохранить архивы.
@@ -105,7 +105,7 @@ def process_zip_file(path: str) -> Dict[str, List[tuple]]:
     return result
 
 
-def second_task(path: str):
+def parse_xml_from_zip(path: str):
     """Выполнение второго задания.
 
     path: str - путь до папки с архивами.
@@ -181,9 +181,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.run:
-        first_task(args.path, args.xml_count, args.zip_count)
-        second_task(args.path)
+        create_xml_in_zip(args.path, args.xml_count, args.zip_count)
+        parse_xml_from_zip(args.path)
     elif args.ceate:
-        first_task(args.path, args.xml_count, args.zip_count)
+        create_xml_in_zip(args.path, args.xml_count, args.zip_count)
     elif args.parse:
-        second_task(args.path)
+        parse_xml_from_zip(args.path)
