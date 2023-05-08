@@ -11,7 +11,7 @@ from zipfile import ZipFile
 
 XML_COUNT = 100
 ZIP_COUNT = 50
-PATH = '/home/user/Dev/parse_xml/archives' #путь для создания и обработки xlm файов
+PATH = '' #путь для создания и обработки xlm файов (вставьте свой путь)
 
 
 def random_string(length: int):
