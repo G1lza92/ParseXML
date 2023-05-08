@@ -1,3 +1,4 @@
+import argparse
 import csv
 import multiprocessing
 import os
@@ -8,10 +9,6 @@ import uuid
 from typing import Dict, List
 from xml.etree.ElementTree import Element, SubElement, parse, tostring
 from zipfile import ZipFile
-
-XML_COUNT = 100
-ZIP_COUNT = 50
-PATH = '/home/user/Dev/parse_xml/archives' #путь для создания и обработки xlm файов
 
 
 def random_string(length: int):
@@ -59,23 +56,24 @@ def create_zip_file(path: str, xml_count: int):
             archive.writestr(filename, xml_data)
 
 
-def first_task(path: str, zip_count: int):
+def first_task(path: str, xml_count: int, zip_count: int):
     """Выполнение первого задания.
 
     path: str - путь до папки в которой нужно сохранить архивы.
-    zip_count: int - количество генерируемых архивов.
+    xml_count: int - кол-во генерируемых xml файлов.
+    zip_count: int - кол-во генерируемых архивов.
     """
     for i in range(zip_count):
         archive_name = f"archive_{i+1}.zip"
         zip_path = os.path.join(path, archive_name)
-        create_zip_file(zip_path, xml_count=XML_COUNT)
+        create_zip_file(zip_path, xml_count=xml_count)
     print('Archives created')
 
 
 def process_xml_file(xml_file: typing.IO) -> Dict[str, List[tuple]]:
     """Обработка xml файла и получение данных из него.
 
-    xml_file: - файл xml формата
+    xml_file: - файл xml формата.
 
     return: словарь с данными из xml файла.
     """
@@ -136,5 +134,56 @@ def second_task(path: str):
     print('Archives parsed')
 
 
-first_task(path=PATH, zip_count=ZIP_COUNT)
-second_task(PATH)
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='XML Parsing with Archives')
+    parser.add_argument(
+        '-c',
+        '--create',
+        dest='create',
+        action='store_true',
+        help='Create archives',
+    )
+    parser.add_argument(
+        '-p',
+        '--parse',
+        dest='parse',
+        action='store_true',
+        help='Parse archives',
+    )
+    parser.add_argument(
+        '-r',
+        '--run',
+        dest='run',
+        action='store_true',
+        help='complete create and parse commands',
+    )
+    parser.add_argument(
+        '--path',
+        dest='path',
+        default=os.path.dirname(os.path.abspath(__file__)),
+        help='Path to archives or a directory for archive creation/retrieval',
+    )
+    parser.add_argument(
+        '--xml-count',
+        dest='xml_count',
+        type=int,
+        default=100,
+        help='Number of XML files in an archive',
+    )
+    parser.add_argument(
+        '--zip-count',
+        dest='zip_count',
+        type=int,
+        default=50,
+        help='Number of ZIP archives to generate',
+    )
+
+    args = parser.parse_args()
+
+    if args.run:
+        first_task(args.path, args.xml_count, args.zip_count)
+        second_task(args.path)
+    elif args.ceate:
+        first_task(args.path, args.xml_count, args.zip_count)
+    elif args.parse:
+        second_task(args.path)
